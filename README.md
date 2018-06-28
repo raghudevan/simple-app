@@ -20,13 +20,13 @@
   cd simple-app
   ```
 
-2a. Install dependencies (Only needed the first time)
+3. Install dependencies (Only needed the first time)
 
   ```
   yarn install
   ```
 
-3. Start the app in development mode
+4. Start the app in development mode
 
   ```
   yarn start
