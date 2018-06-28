@@ -14,19 +14,19 @@
   git clone https://github.com/raghudevan/simple-app.git simple-app
   ```
 
-1. Move into the repo
+2. Move into the repo
 
   ```
   cd simple-app
   ```
 
-1a. Install dependencies (Only needed the first time)
+2a. Install dependencies (Only needed the first time)
 
   ```
   yarn install
   ```
 
-2. Start the app in development mode
+3. Start the app in development mode
 
   ```
   yarn start
