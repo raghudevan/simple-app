@@ -1,0 +1,11 @@
+.success-message-container {
+  max-width: 350px;
+  min-width: 350px;
+  min-height: 100%;
+  padding: 14px;
+  margin: auto;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}

@@ -1,71 +1,103 @@
 import React, { Component } from 'react';
+import 'whatwg-fetch';
+
+import * as actions from './ajax';
+
+import Login from './Login';
+import SuccessPage from './SuccessPage';
+
 import './App.css';
-import * as sellerMobileLogo from './sellermobile-logo.png';
 
 class App extends Component {
+
+  state = {
+    errors: [],
+    isLoading: false,
+    isLoggedIn: false,
+    password: '', 
+    username: '',
+  }
+
+  moveToRegisterPage = () => {
+    window.location.href = 'https://app.sellermobile.com/register';
+  }
+
+  onInputChange = (field, value) => {
+    this.setState({
+      [field]: value.trim(),
+    });
+  }
+
+  signIn = () => {
+    const { isLoading, password, username } = this.state;
+    let errors = [];
+    let isLoggedIn = false;
+    if (isLoading) {
+      return;
+    }
+
+    if (!username) {
+      // no username error
+      errors.push('Enter your email or mobile phone number');
+    } 
+    if (!password) { 
+      // no password error
+      errors.push('Enter your password');
+    } 
+
+    this.setState({
+      errors,
+      isLoading: true,
+    }, () => {
+      if (!errors.length) {
+        // if no error, do signin
+        actions
+          .signIn({ username, password })
+          .then((data) => {
+            // on success, move to the next page
+            // on failure show error message
+            const { status, message } = data;
+            if (status === 'error') {
+              errors.push(message);
+            } else {
+              isLoggedIn = true; 
+            }
+            
+            this.setState({
+              errors,
+              isLoading: false,
+              isLoggedIn,
+            });
+          });
+      } 
+    });
+
+  }
+
   render() {
+    const { 
+      errors, isLoading, isLoggedIn,
+      password, username 
+    } = this.state;
+   
     return ( 
       <div
         className='app-container'
       >
-        <img 
-          alt='sellermobile-logo'
-          className='app-logo'
-          src={sellerMobileLogo}
-        />
-        <div
-          className='signin-container'
-        >
-          <h1
-            className='signin'
-          >
-            Sign In
-          </h1>
-
-          <div
-            className='signin-field'
-          >
-            <label>Email (phone for mobile accounts)</label>
-            <input 
-              className='input-field'
-              maxlength="128" 
-              tabindex="1" 
-              type="email" 
+        {
+          !isLoggedIn ?
+            <Login 
+              errors={errors}
+              isLoading={isLoading}
+              moveToRegisterPage={this.moveToRegisterPage}
+              onInputChange={this.onInputChange}
+              password={password}
+              signIn={this.signIn}
+              username={username}
+            /> :
+            <SuccessPage 
             />
-          </div>
-
-          <div
-            className='signin-field m-b-22'
-          >
-            <div
-              className='flex-row-space-between'
-            >
-              <label>Password</label>
-              <a
-                href=''
-              >
-                Forgot your password?
-              </a>
-            </div>
-            <input 
-              className='input-field'
-              tabindex="2" 
-              type='password'
-            />
-          </div>
-
-          <div 
-            className='btn btn-primary m-b-26'
-          >
-            Sign in
-          </div>
-
-          <div 
-            className='btn m-b-26'
-          >
-            Register now
-          </div>
-        </div>
+        }
       </div>
     );
   }
